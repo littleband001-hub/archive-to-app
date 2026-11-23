@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 export const Route = createFileRoute("/")({ component: Index });
 
@@ -40,12 +40,15 @@ function Index() {
     const timer = window.setInterval(() => {
       setElapsed((value) => {
         const next = Math.min(total, value + 0.1);
-        if (next >= total) setPlaying(false);
         return next;
       });
     }, 100);
     return () => window.clearInterval(timer);
   }, [playing]);
+
+  useEffect(() => {
+    if (playing && elapsed >= total) setPlaying(false);
+  }, [elapsed, playing]);
 
   useEffect(() => {
     if (!playing || muted || !voiceOn || typeof window === "undefined" || !("speechSynthesis" in window)) return;
@@ -114,7 +117,7 @@ function Index() {
         <div className="topline"><div className="eyebrow">Arquivo de Eudoria <span style={{ color: "#64718e" }}> / EXTRA ESPECIAL</span></div><div className="live">VÍDEO • 9:16</div></div>
         <div className="layout">
           <div className="poster-wrap">
-            <div className="poster" style={{ "--glow": scene.color } as React.CSSProperties} aria-label={`Cena ${currentScene + 1}: ${scene.title}`}>
+            <div className="poster" style={{ "--glow": scene.color } as CSSProperties} aria-label={`Cena ${currentScene + 1}: ${scene.title}`}>
               <div className="sky" />
               <div className="planet" />
               <div className="ring" />
